@@ -16,16 +16,13 @@ function AuthProvider({ children }) {
     }
 
     api
-      .get("/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get("/auth/me")
       .then((response) => {
         setUser(response.data.user);
       })
       .catch(() => {
         localStorage.removeItem("token");
+        setUser(null);
       })
       .finally(() => {
         setLoading(false);
