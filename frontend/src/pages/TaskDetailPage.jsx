@@ -10,7 +10,6 @@ function TaskDetailPage() {
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [editing, setEditing] = useState(false);
 
   const fetchTask = async () => {
     try {
@@ -34,28 +33,11 @@ function TaskDetailPage() {
 
   const handleUpdate = async (taskData) => {
     try {
-      const response = await api.put(`/tasks/${id}`, taskData);
-
-      setTask(response.data.task);
-      setEditing(false);
+      await api.put(`/tasks/${id}`, taskData);
+      navigate("/");
     } catch (error) {
       setError(
         error.response?.data?.message || "Failed to update task"
-      );
-    }
-  };
-
-  const handleStatusChange = async (event) => {
-    try {
-      const response = await api.patch(`/tasks/${id}/status`, {
-        status: event.target.value,
-      });
-
-      setTask(response.data.task);
-    } catch (error) {
-      setError(
-        error.response?.data?.message ||
-          "Failed to update task status"
       );
     }
   };
@@ -82,7 +64,10 @@ function TaskDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-muted">Loading task...</p>
+        <div className="text-center">
+          <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-sm text-muted">Loading task...</p>
+        </div>
       </div>
     );
   }
@@ -97,9 +82,9 @@ function TaskDetailPage() {
 
           <Link
             to="/"
-            className="mt-4 inline-block text-primary hover:underline"
+            className="mt-4 inline-flex items-center gap-1.5 text-primary hover:underline"
           >
-            Back to Dashboard
+            ← Back to Dashboard
           </Link>
         </div>
       </div>
@@ -108,111 +93,49 @@ function TaskDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-        <div className="mb-6">
+      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <div className="mb-6 flex items-center justify-between">
           <Link
             to="/"
-            className="text-sm font-medium text-primary hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition hover:underline"
           >
             ← Back to Dashboard
           </Link>
+
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50/60 px-3.5 py-1.5 text-xs font-medium text-danger transition hover:bg-red-100 hover:border-red-300"
+          >
+            <svg
+              className="h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+            Delete Task
+          </button>
         </div>
 
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-danger">
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-danger">
             {error}
           </div>
         )}
 
-        {editing ? (
-          <div>
-            <h1 className="mb-5 text-2xl font-bold text-text">
-              Edit Task
-            </h1>
-
-            <TaskForm
-              task={task}
-              onSubmit={handleUpdate}
-              onCancel={() => setEditing(false)}
-            />
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-            <div className="flex flex-col justify-between gap-4 sm:flex-row">
-              <div>
-                <h1 className="text-3xl font-bold text-text">
-                  {task.title}
-                </h1>
-
-                <p className="mt-3 text-muted">
-                  {task.description || "No description provided."}
-                </p>
-              </div>
-
-              <span className="h-fit rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                {task.priority}
-              </span>
-            </div>
-
-            <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              <div>
-                <p className="text-sm text-muted">Status</p>
-
-                <select
-                  value={task.status}
-                  onChange={handleStatusChange}
-                  className="mt-2 rounded-lg border border-border bg-surface px-4 py-2.5 outline-none focus:border-primary"
-                >
-                  <option value="pending">Pending</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
-              </div>
-
-              <div>
-                <p className="text-sm text-muted">Due Date</p>
-
-                <p className="mt-2 font-medium text-text">
-                  {task.dueDate
-                    ? new Date(task.dueDate).toLocaleDateString()
-                    : "No due date"}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-muted">Created</p>
-
-                <p className="mt-2 font-medium text-text">
-                  {new Date(task.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-muted">Last Updated</p>
-
-                <p className="mt-2 font-medium text-text">
-                  {new Date(task.updatedAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3 border-t border-border pt-6">
-              <button
-                onClick={() => setEditing(true)}
-                className="rounded-lg bg-primary px-5 py-2.5 font-medium text-white transition hover:bg-primary-dark"
-              >
-                Edit Task
-              </button>
-
-              <button
-                onClick={handleDelete}
-                className="rounded-lg border border-red-200 px-5 py-2.5 font-medium text-danger transition hover:bg-red-50"
-              >
-                Delete Task
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Direct Edit Form */}
+        <TaskForm
+          task={task}
+          onSubmit={handleUpdate}
+          onCancel={() => navigate("/")}
+        />
       </div>
     </div>
   );
