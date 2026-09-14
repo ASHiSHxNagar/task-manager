@@ -68,6 +68,40 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+router.get("/stats", protect, async (req, res) => {
+  try {
+    const total = await Task.countDocuments({
+      user: req.user._id,
+    });
+
+    const pending = await Task.countDocuments({
+      user: req.user._id,
+      status: "pending",
+    });
+
+    const inProgress = await Task.countDocuments({
+      user: req.user._id,
+      status: "in-progress",
+    });
+
+    const completed = await Task.countDocuments({
+      user: req.user._id,
+      status: "completed",
+    });
+
+    res.json({
+      total,
+      pending,
+      inProgress,
+      completed,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
+
 router.get("/:id", protect, async (req, res) => {
   try {
     const task = await Task.findOne({
