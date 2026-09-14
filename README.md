@@ -4,6 +4,18 @@ A full-stack, responsive Task Management web application built with the **MERN**
 
 ---
 
+## 🌐 Live Deployment Links
+
+- 🚀 **Frontend (Vercel)**: [https://task-manager-three-lime-34.vercel.app/](https://task-manager-three-lime-34.vercel.app/)
+- ⚙️ **Backend API (Render)**: [https://task-manager-backend-bi9y.onrender.com](https://task-manager-backend-bi9y.onrender.com)
+
+> [!IMPORTANT]
+> **⚠️ Render Free Tier Cold-Start Note:**
+> The backend server is hosted on Render's free tier, which automatically spins down into sleep mode after periods of inactivity.
+> **Please open/hit the [Backend URL](https://task-manager-backend-bi9y.onrender.com) 4–5 times (or refresh it and wait ~30–50 seconds) to wake up the server before using the frontend.** Once the backend responds with `{"message": "Task Manager API is running"}`, you can smoothly register, log in, and manage tasks on the frontend without delays.
+
+---
+
 ## ✨ Features
 
 - 🔐 **Authentication & Security**
@@ -39,6 +51,7 @@ A full-stack, responsive Task Management web application built with the **MERN**
 - **Routing**: React Router DOM v7
 - **Styling**: Tailwind CSS v4
 - **HTTP Client**: Axios (with authorization request interceptors)
+- **Deployment**: Vercel
 
 ### Backend
 - **Runtime**: Node.js
@@ -47,6 +60,7 @@ A full-stack, responsive Task Management web application built with the **MERN**
 - **Authentication**: JSON Web Tokens (`jsonwebtoken`) & `bcryptjs`
 - **Environment Management**: `dotenv`
 - **CORS**: Cross-Origin Resource Sharing enabled
+- **Deployment**: Render
 
 ---
 
@@ -90,6 +104,7 @@ task-manager/
 │   │   └── main.jsx
 │   ├── package.json
 │   └── vite.config.js
+├── vercel.json                 # Vercel SPA routing rewrite rules
 └── README.md
 ```
 
